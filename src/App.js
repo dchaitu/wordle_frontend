@@ -1,10 +1,11 @@
 import './App.css';
-import Game from "./component/Game";
+import GuessWord from "./component/GuessWord";
+import React from "react";
 
 function App() {
   return (
     <div className="App">
-        <Game/>
+        <GuessWord/>
     </div>
   );
 }

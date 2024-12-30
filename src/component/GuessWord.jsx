@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
+import Clues from "./Clues";
 
 
 const GuessWord = () => {
     const initialGuesses = 6;
     const [guesses, setGuesses] = useState(initialGuesses);
     const [guessWord, setGuessWord] = useState('');
+    const [guessedWords, setGuessedWords] = useState([]);
     const [answer, setAnswer] = useState("");
     const [isWrong, setIsWrong] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
@@ -31,6 +33,7 @@ const GuessWord = () => {
     };
     useEffect(() => {
         console.log(getValue());
+
     }, []);
 
     const handleGuessWord = (event) => {
@@ -39,15 +42,18 @@ const GuessWord = () => {
 
     const handleEnterKey = (event) => {
         if(event.key === "Enter") {
-            if (event.target.value.toString().length === 5 ) {
+            console.log(`Inside Enter ${guessWord}`);
+            if (guessWord.length === 5 ) {
                 console.log("Enter Clicked");
-                validateWithAnswer(guessWord, answer)
+                setGuessedWords((prevGuessedWords) => [...prevGuessedWords, guessWord]);
+                validateWithAnswer(guessWord, answer);
+
                 setIsWordFormed(true);
+                setGuessWord('');
             }
             else
             {
                 setIsWordFormed(false);
-
             }
 
         }
@@ -68,12 +74,18 @@ const GuessWord = () => {
         if (guesses > 0) {
             return (
                 <div>
-                    <h1>Answer is: {answer} Remaining chances {guesses}</h1>
-                    <input value={guessWord} onChange={handleGuessWord} minLength={5} maxLength={5} onKeyDown={handleEnterKey}/>
-                    <h2>{guessWord}</h2>
+                    <h1>Answer is: {answer} </h1>
+                    <h2>Remaining chances {guesses}</h2>
+                    <input value={guessWord} onChange={handleGuessWord}  minLength={5} maxLength={5} onKeyDown={handleEnterKey}/>
+                    <h3>Current Words are:</h3>
+                    <h3>{guessedWords.length>0 &&
+                        guessedWords.map((word, index) => (<div>{index} word is {word}</div>))
+                    }</h3>
                     {!isWordFormed && minChars }
                     {isWrong && wrongAnswer}
                     {isCorrect && correctAnswer}
+                    <br/>
+                    {guessedWords.length>0 &&<Clues guessedWord={guessedWords[guessedWords.length-1]} actualWord={answer} />}
                 </div>
             );
         }
